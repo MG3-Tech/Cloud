@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!-- 
+	Author Name: 	Vic Gauthreaux
+	File Name: 		  index.html
+	Date: 			    01/01/2059
+  Project:        Just playing around with JS/HTML/CSS to make matric effect with image fading onto screen after a few seconds
+ -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coding The Coast</title>
+<style>
+  body, html {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .fadeImage {
+    opacity: 0;
+    transition: opacity 2s ease-in-out, transform 2s ease-in-out;
+    max-width: 50%;
+    max-height: 50%;
+    z-index: 2;
+    position: absolute;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="matrixCanvas"></canvas>
+
+<!-- Multiple images -->
+<img class="fadeImage" src="cloud.png" alt="Image 1">
+<img class="fadeImage" src="codingbanr.png" alt="Image 2">
+<img class="fadeImage" src="networking.png" alt="Image 3">
+<img class="fadeImage" src="cyber.png" alt="Image 4">
+<img class="fadeImage" src="data.png" alt="Image 5">
+<img class="fadeImage" src="ITspecialist.png" alt="Image 6">
+<img class="fadeImage" src="prog.png" alt="Image 7">
+
+<script>
+  // Matrix Effect
+  var c = document.querySelector('canvas');
+  var ctx = c.getContext('2d');
+
+  c.height = window.innerHeight;
+  c.width = window.innerWidth;
+
+  var matrixChars = 'MGC3mgc'.split('');
+  var font_size = 16;
+  var columns = c.width / font_size;
+  var drops = [];
+
+  for (var x = 0; x < columns; x++) drops[x] = 1;
+
+  function drawMatrixRain() {
+    ctx.fillStyle = 'rgba(12, 28, 68, 0.05)';
+    ctx.fillRect(0, 0, c.width, c.height);
+
+    ctx.fillStyle = '#f2b330';
+    ctx.font = font_size + 'px arial';
+
+    for (var i = 0; i < drops.length; i++) {
+      var text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+      ctx.fillText(text, i * font_size, drops[i] * font_size);
+
+      if (drops[i] * font_size > c.height && Math.random() > 0.975) drops[i] = 0;
+
+      drops[i]++;
+    }
+  }
+
+  setInterval(drawMatrixRain, 69);
+
+  window.addEventListener('resize', function () {
+    c.height = window.innerHeight;
+    c.width = window.innerWidth;
+    columns = c.width / font_size;
+    drops = [];
+    for (var x = 0; x < columns; x++) drops[x] = 1;
+  });
+
+  // Image Rotation Logic
+  const images = document.querySelectorAll('.fadeImage');
+  let currentIndex = 0;
+
+  function rotateImages() {
+    images.forEach((img, idx) => {
+      img.style.opacity = '0';
+      img.style.transform = 'rotate(0deg)';
+    });
+
+    const currentImage = images[currentIndex];
+    currentImage.style.opacity = '1';
+    
+
+    setTimeout(() => {
+      currentImage.style.opacity = '0';
+      currentIndex = (currentIndex + 1) % images.length;
+      setTimeout(rotateImages, 1500); // Delay before showing next image
+    }, 5000); // Display each image for 5 seconds
+  }
+
+  // Start rotation after initial delay
+  setTimeout(rotateImages, 3000);
+</script>
+
+</body>
+</html>
+
